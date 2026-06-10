@@ -1,30 +1,20 @@
-services:
-  - type: web
-    name: amazon-associate
-    runtime: python
-    plan: free
-    region: oregon
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    startCommand: "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
-    envVars:
-      - key: PYTHON_VERSION
-        value: "3.13.0"
-      - key: DJANGO_SETTINGS_MODULE
-        value: config.Settings.prod
-      - key: SECRET_KEY
-        generateValue: true
-      - key: ALLOWED_HOSTS
-        sync: false
-      - key: CSRF_TRUSTED_ORIGINS
-        sync: false
-      - key: DB_NAME
-        fromDatabase:
-          name: amazon-associate-db
-          property: database
+# Exported from Render on 2026-06-10T13:09:10Z
+version: "1"
+projects:
+- name: Amazon Associate
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: amazon_associate
+      runtime: docker
+      repo: https://github.com/mprovost129/amazon_associate
+      plan: free
+      envVars:
       - key: DB_USER
-        fromDatabase:
-          name: amazon-associate-db
-          property: user
+        sync: false
+      - key: DB_PORT
+        sync: false
       - key: DB_PASSWORD
         fromDatabase:
           name: amazon-associate-db
@@ -33,12 +23,33 @@ services:
         fromDatabase:
           name: amazon-associate-db
           property: host
-      - key: DB_PORT
+      - key: DB_NAME
+        sync: false
+      - key: DATABASE_URL
         fromDatabase:
           name: amazon-associate-db
-          property: port
-
-databases:
-  - name: amazon-associate-db
-    plan: free
-    region: oregon
+          property: connectionString
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        sync: false
+      - key: DJANGO_SETTINGS_MODULE
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
+      region: ohio
+      dockerContext: .
+      dockerfilePath: ./Dockerfile
+      autoDeployTrigger: commit
+    databases:
+    - name: amazon-associate-db
+      databaseName: amazon_associate_db
+      user: amazon_associate_db_user
+      plan: free
+      region: ohio
+      ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+      postgresMajorVersion: "18"
