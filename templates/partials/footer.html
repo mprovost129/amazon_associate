@@ -1,0 +1,30 @@
+<footer class="bg-dark text-light mt-auto">
+    <div class="container py-4">
+        <div class="row gy-3">
+            <div class="col-md-4">
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-bag-heart-fill me-1"></i>My Picks
+                </h6>
+                <p class="small text-secondary mb-0">
+                    Curated products I actually use and recommend.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-bold mb-2">Links</h6>
+                <ul class="list-unstyled small mb-0">
+                    <li><a href="{% url 'core:home' %}" class="text-secondary text-decoration-none footer-link">Home</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-bold mb-2">Disclosure</h6>
+                <p class="small text-secondary mb-0">
+                    As an Amazon Associate I earn from qualifying purchases.
+                </p>
+            </div>
+        </div>
+        <hr class="border-secondary my-3">
+        <p class="small text-secondary text-center mb-0">
+            &copy; {% now "Y" %} My Picks. All rights reserved.
+        </p>
+    </div>
+</footer>
