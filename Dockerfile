@@ -19,4 +19,4 @@ RUN SECRET_KEY=build-only DB_NAME=x DB_USER=x DB_PASSWORD=x ALLOWED_HOSTS=localh
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py create_superuser_if_none && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2"]
