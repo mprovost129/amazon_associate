@@ -14,7 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN python manage.py collectstatic --noinput
+RUN SECRET_KEY=build-only DB_NAME=x DB_USER=x DB_PASSWORD=x ALLOWED_HOSTS=localhost \
+    python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
