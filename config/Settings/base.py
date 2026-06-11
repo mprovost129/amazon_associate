@@ -98,6 +98,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_NAME = 'Provost Digital Depot'
 SITE_TAGLINE = 'Curated picks for architecture, coding, and 3D printing.'
+SITE_HERO = (
+    "These are the tools, gear, and resources I actually use every day "
+    "as an architect, coder, and 3D printing enthusiast. "
+    "Everything here is something I personally recommend."
+)
 
 # Auth
 LOGIN_URL = 'login'
