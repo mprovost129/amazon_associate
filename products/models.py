@@ -6,6 +6,10 @@ from django.db import models
 class Category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
+    hero_text = models.TextField(
+        blank=True,
+        help_text='Text shown below the navbar on this category page.',
+    )
 
     class Meta:
         verbose_name_plural = 'categories'

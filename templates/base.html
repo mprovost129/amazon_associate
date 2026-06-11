@@ -15,13 +15,7 @@
 
     {% include 'partials/navbar.html' %}
 
-    {% if SITE_HERO %}
-    <div class="site-hero">
-        <div class="container">
-            <p class="mb-0">{{ SITE_HERO }}</p>
-        </div>
-    </div>
-    {% endif %}
+    {% block hero %}{% endblock %}
 
     <main class="flex-grow-1">
         {% if messages %}

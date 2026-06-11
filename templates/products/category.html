@@ -3,6 +3,8 @@
 {% block title %}{{ category.name }} | {{ SITE_NAME }}{% endblock %}
 {% block meta_description %}Shop {{ category.name }} picks curated by {{ SITE_NAME }}.{% endblock %}
 
+{% block hero %}{% include 'partials/hero.html' with hero_text=category.hero_text %}{% endblock %}
+
 {% block content %}
 <div class="container py-4">
 

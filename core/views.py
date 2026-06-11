@@ -1,6 +1,7 @@
 from django.db.models import Prefetch
 from django.views.generic import TemplateView
 
+from core.models import SiteSetting
 from products.models import Category, Product
 
 
@@ -20,4 +21,6 @@ class HomeView(TemplateView):
         context['uncategorized'] = Product.objects.filter(
             is_active=True, category__isnull=True
         )
+        site_setting, _ = SiteSetting.objects.get_or_create(pk=1)
+        context['home_hero'] = site_setting.home_hero
         return context
