@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Shop {{ category.name }} picks curated by {{ SITE_NAME }}.{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <h1 class="h3 mb-4">{{ category.name }}</h1>
+
+    {% if products %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        {% for product in products %}
+            {% include 'partials/product_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted py-5 text-center">No products in this category yet.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

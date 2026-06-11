@@ -14,6 +14,10 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('products:category', args=[self.slug])
+
 
 class Product(models.Model):
     category = models.ForeignKey(

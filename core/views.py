@@ -1,22 +1,23 @@
-from django.views.generic import ListView
+from django.db.models import Prefetch
+from django.views.generic import TemplateView
 
 from products.models import Category, Product
 
 
-class HomeView(ListView):
-    model = Product
+class HomeView(TemplateView):
     template_name = 'core/home.html'
-    context_object_name = 'products'
-
-    def get_queryset(self):
-        qs = Product.objects.filter(is_active=True).select_related('category')
-        slug = self.request.GET.get('category')
-        if slug:
-            qs = qs.filter(category__slug=slug)
-        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
-        context['active_category'] = self.request.GET.get('category', '')
+        active_products = Prefetch(
+            'products',
+            queryset=Product.objects.filter(is_active=True),
+            to_attr='active_products',
+        )
+        context['sections'] = Category.objects.prefetch_related(active_products).filter(
+            products__is_active=True
+        ).distinct()
+        context['uncategorized'] = Product.objects.filter(
+            is_active=True, category__isnull=True
+        )
         return context

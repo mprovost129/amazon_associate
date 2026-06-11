@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Privacy policy for {{ SITE_NAME }}.{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 760px;">
+    <h1 class="mb-1">Privacy Policy</h1>
+    <p class="text-muted small mb-4">Last updated: June 2026</p>
+
+    <p>This privacy policy describes how {{ SITE_NAME }} ("we", "us", or "our") collects and uses information when you visit this website.</p>
+
+    <h2 class="h5 mt-4 mb-2">Information We Collect</h2>
+    <p>We do not require you to create an account or provide any personal information to browse this site.</p>
+    <p>When you click a product link, our server logs a hashed (one-way encrypted) version of your IP address, your browser user-agent string, and the page you came from. This data is used solely to understand which products are popular. It cannot be used to identify you personally.</p>
+
+    <h2 class="h5 mt-4 mb-2">Cookies</h2>
+    <p>We do not set any first-party tracking cookies. Third-party services such as Amazon may set their own cookies when you follow a link to their site. Please review <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=468496" target="_blank" rel="noopener">Amazon's privacy policy</a> for details.</p>
+
+    <h2 class="h5 mt-4 mb-2">Amazon Associates Disclosure</h2>
+    <p>{{ SITE_NAME }} is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. When you click a product link and make a purchase, we may earn a small commission at no additional cost to you.</p>
+
+    <h2 class="h5 mt-4 mb-2">Third-Party Links</h2>
+    <p>This site contains links to Amazon.com and other third-party websites. We are not responsible for the privacy practices or content of those sites.</p>
+
+    <h2 class="h5 mt-4 mb-2">Children's Privacy</h2>
+    <p>This site is not directed at children under the age of 13 and we do not knowingly collect information from children.</p>
+
+    <h2 class="h5 mt-4 mb-2">Changes to This Policy</h2>
+    <p>We may update this policy from time to time. The date at the top of this page reflects the most recent revision.</p>
+
+    <h2 class="h5 mt-4 mb-2">Contact</h2>
+    <p>If you have questions about this privacy policy, you can reach us at <a href="mailto:mprovost129@gmail.com">mprovost129@gmail.com</a>.</p>
+</div>
+{% endblock %}

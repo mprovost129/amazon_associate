@@ -14,6 +14,24 @@
                     <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
                        href="{% url 'core:home' %}">Home</a>
                 </li>
+                {% if nav_categories %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'category' %}active{% endif %}"
+                       href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Shop
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        {% for cat in nav_categories %}
+                        <li>
+                            <a class="dropdown-item {% if request.resolver_match.kwargs.slug == cat.slug %}active{% endif %}"
+                               href="{{ cat.get_absolute_url }}">
+                                {{ cat.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 {% if user.is_authenticated %}
