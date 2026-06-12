@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Count, Prefetch
 from django.http import HttpResponse
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -20,20 +21,20 @@ class HomeView(TemplateView):
         )
         context['sections'] = Category.objects.prefetch_related(active_products).filter(
             products__is_active=True
-        ).distinct()[:6]
+        ).distinct()[:settings.HOME_SECTIONS_LIMIT]
         context['uncategorized'] = Product.objects.filter(
             is_active=True
-        ).filter(categories__isnull=True).prefetch_related('tags')[:8]
+        ).filter(categories__isnull=True).prefetch_related('tags')[:settings.HOME_UNCATEGORIZED_LIMIT]
         context['featured_products'] = Product.objects.filter(
             is_active=True, is_featured=True,
-        ).prefetch_related('categories', 'tags')[:8]
+        ).prefetch_related('categories', 'tags')[:settings.HOME_FEATURED_PRODUCTS_LIMIT]
         context['featured_collections'] = Collection.objects.filter(
             is_published=True, is_featured=True,
-        ).prefetch_related('products')[:4]
+        ).prefetch_related('products')[:settings.HOME_FEATURED_COLLECTIONS_LIMIT]
         context['featured_guides'] = Guide.objects.filter(
             is_published=True, is_featured=True,
-        ).select_related('category').prefetch_related('tags')[:3]
-        context['popular_tags'] = Tag.objects.filter(products__is_active=True).distinct()[:12]
+        ).select_related('category').prefetch_related('tags')[:settings.HOME_FEATURED_GUIDES_LIMIT]
+        context['popular_tags'] = Tag.objects.filter(products__is_active=True).distinct()[:settings.HOME_POPULAR_TAGS_LIMIT]
         site_setting, _ = SiteSetting.objects.get_or_create(pk=1)
         context['home_hero'] = site_setting.home_hero
         return context
@@ -64,22 +65,22 @@ class PerformanceDashboardView(UserPassesTestMixin, TemplateView):
         context['top_products'] = (
             Product.objects.filter(clicks__isnull=False)
             .annotate(total_clicks=Count('clicks'))
-            .order_by('-total_clicks', 'name')[:10]
+            .order_by('-total_clicks', 'name')[:settings.PERFORMANCE_TOP_LIMIT]
         )
         context['top_sources'] = (
             clicks.values('source')
             .annotate(total=Count('id'))
-            .order_by('-total')[:10]
+            .order_by('-total')[:settings.PERFORMANCE_TOP_LIMIT]
         )
         context['top_campaigns'] = (
             clicks.values('campaign')
             .annotate(total=Count('id'))
-            .order_by('-total')[:10]
+            .order_by('-total')[:settings.PERFORMANCE_TOP_LIMIT]
         )
         context['top_pages'] = (
             clicks.values('page_path')
             .annotate(total=Count('id'))
-            .order_by('-total')[:10]
+            .order_by('-total')[:settings.PERFORMANCE_TOP_LIMIT]
         )
-        context['recent_clicks'] = clicks.order_by('-clicked_at')[:25]
+        context['recent_clicks'] = clicks.order_by('-clicked_at')[:settings.PERFORMANCE_RECENT_CLICKS_LIMIT]
         return context

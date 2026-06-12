@@ -2,6 +2,7 @@ import csv
 from io import TextIOWrapper
 from urllib.parse import urlparse
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
@@ -19,7 +20,7 @@ class ProductSearchView(ListView):
     model = Product
     template_name = 'products/search.html'
     context_object_name = 'products'
-    paginate_by = 24
+    paginate_by = settings.SEARCH_PRODUCTS_PER_PAGE
 
     def get_queryset(self):
         queryset = Product.objects.filter(is_active=True).prefetch_related('categories', 'tags')
@@ -64,7 +65,7 @@ class CategoryDetailView(DetailView):
         ).prefetch_related('tags')
         context['featured_products'] = Product.objects.filter(
             categories=self.object, is_active=True, is_featured=True
-        ).prefetch_related('tags')[:8]
+        ).prefetch_related('tags')[:settings.CATEGORY_FEATURED_LIMIT]
         return context
 
 
@@ -87,7 +88,7 @@ class ProductDetailView(DetailView):
             product_categories = product.categories.all()
             if product_categories.exists():
                 related = related.filter(categories__in=product_categories)
-            related = related.prefetch_related('categories', 'tags').distinct()[:4]
+            related = related.prefetch_related('categories', 'tags').distinct()[:settings.RELATED_PRODUCTS_LIMIT]
         context['related_products'] = related
         return context
 
