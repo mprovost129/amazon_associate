@@ -47,7 +47,7 @@ class ProductAdmin(admin.ModelAdmin):
     actions = ('mark_current', 'mark_needs_review', 'mark_inactive', 'export_selected_csv', 'duplicate_products')
     fieldsets = (
         (None, {
-            'fields': ('categories', 'tags', 'related_products', 'name', 'slug', 'description', 'amazon_url', 'amazon_asin', 'image_url'),
+            'fields': ('categories', 'tags', 'related_products', 'name', 'slug', 'description', 'amazon_url', 'amazon_asin', 'image', 'image_url'),
         }),
         ('Recommendation copy', {
             'fields': ('best_for', 'why_i_like_it'),
@@ -100,7 +100,7 @@ class ProductAdmin(admin.ModelAdmin):
         original.tags.set(tags)
         original.related_products.set(related)
 
-        self.message_user(request, f'Duplicated successfully. Update the name, slug, and Amazon URL before publishing.', messages.SUCCESS)
+        self.message_user(request, 'Duplicated successfully. Update the name, slug, and Amazon URL before publishing.', messages.SUCCESS)
         return HttpResponseRedirect(reverse('admin:products_product_change', args=[original.pk]))
 
     @admin.display(description='Categories')

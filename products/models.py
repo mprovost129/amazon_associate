@@ -71,7 +71,12 @@ class Product(models.Model):
         help_text='Longer product detail copy explaining why this item is recommended.',
     )
     amazon_url = models.URLField()
-    image_url = models.URLField(blank=True)
+    image = models.ImageField(
+        upload_to='products/',
+        blank=True,
+        help_text='Upload an image — takes priority over the URL field below.',
+    )
+    image_url = models.URLField(blank=True, help_text='Fallback if no image is uploaded above.')
     is_active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=0)
@@ -117,6 +122,10 @@ class Product(models.Model):
         self.review_status = self.REVIEW_CURRENT
         self.last_checked_at = timezone.now()
         self.save(update_fields=['review_status', 'last_checked_at'])
+
+    @property
+    def display_image_url(self):
+        return self.image.url if self.image else self.image_url
 
     @property
     def display_seo_title(self):

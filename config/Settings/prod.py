@@ -42,8 +42,21 @@ else:
 # Whitenoise — insert after SecurityMiddleware
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
+_s3_bucket = os.environ.get('AWS_STORAGE_BUCKET_NAME', 'phd-media-prod')
+_s3_configured = os.environ.get('AWS_ACCESS_KEY_ID')
+
 STORAGES = {
     'default': {
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        'OPTIONS': {
+            'bucket_name': _s3_bucket,
+            'region_name': os.environ.get('AWS_S3_REGION_NAME', 'us-east-1'),
+            'location': 'media',
+            'file_overwrite': False,
+            'default_acl': None,
+            'object_parameters': {'CacheControl': 'max-age=86400'},
+        },
+    } if _s3_configured else {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
     },
     'staticfiles': {

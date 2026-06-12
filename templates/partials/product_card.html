@@ -1,8 +1,8 @@
 <div class="col">
     <div class="card h-100 product-card">
         <a href="{{ product.get_absolute_url }}" class="product-card__img-link">
-            {% if product.image_url %}
-            <img src="{{ product.image_url }}"
+            {% if product.display_image_url %}
+            <img src="{{ product.display_image_url }}"
                  alt="{{ product.name }}"
                  class="card-img-top product-card__img"
                  loading="lazy">
