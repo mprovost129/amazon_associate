@@ -67,6 +67,9 @@ if _redis_url:
     }
 # else: inherits locmem cache from base.py
 
+# Tell Django the original request was HTTPS even though Render forwards it as HTTP
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # HTTPS / security
 SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 31536000
