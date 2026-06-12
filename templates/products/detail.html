@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.display_seo_title }} | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ product.display_seo_description }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_title %}{{ product.display_seo_title }} | {{ SITE_NAME }}{% endblock %}
+{% block og_description %}{{ product.display_seo_description }}{% endblock %}
+{% block og_image %}{% if product.image_url %}<meta property="og:image" content="{{ product.image_url }}">{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+            {% if product.category %}
+            <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="alert alert-warning small mb-4" role="note">
+        <strong>Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases. This does not change the price you pay.
+    </div>
+
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-5">
+            <div class="card product-detail__media">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid rounded" loading="lazy">
+                {% else %}
+                <div class="product-card__placeholder py-5">
+                    <i class="bi bi-image text-secondary" style="font-size:4rem;"></i>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-7">
+            {% if product.is_featured %}
+            <span class="badge text-bg-warning mb-2">Featured pick</span>
+            {% endif %}
+            <h1 class="mb-3">{{ product.name }}</h1>
+            {% if product.best_for %}
+            <p class="lead"><strong>Best for:</strong> {{ product.best_for }}</p>
+            {% endif %}
+            {% if product.description %}
+            <p class="text-muted">{{ product.description }}</p>
+            {% endif %}
+            {% if product.why_i_like_it %}
+            <h2 class="h4 mt-4">Why I recommend it</h2>
+            <p>{{ product.why_i_like_it|linebreaksbr }}</p>
+            {% endif %}
+            <div class="d-grid gap-2 d-sm-flex mt-4">
+                <a href="{{ product.get_redirect_url }}" class="btn btn-warning btn-lg fw-semibold js-affiliate-click" rel="sponsored nofollow noopener" data-product-name="{{ product.name }}" data-product-category="{{ product.category.name|default:'Uncategorized' }}">
+                    Check Current Price on Amazon
+                </a>
+                {% if product.category %}
+                <a href="{{ product.category.get_absolute_url }}" class="btn btn-outline-secondary btn-lg">
+                    More {{ product.category.name }} Picks
+                </a>
+                {% endif %}
+            </div>
+            <p class="small text-muted mt-3 mb-0">
+                Prices and availability can change. Use the Amazon button to view the current product details.
+            </p>
+            {% if product.last_checked_at %}
+            <p class="small text-muted mt-1">Last reviewed: {{ product.last_checked_at|date:"F j, Y" }}</p>
+            {% endif %}
+            {% if product.tags.exists %}
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                {% for tag in product.tags.all %}
+                <a href="{% url 'products:search' %}?tag={{ tag.slug }}" class="badge rounded-pill text-bg-light border text-decoration-none">{{ tag.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if related_products %}
+    <section class="mt-5">
+        <h2 class="h4 mb-3">Related Picks</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+            {% for product in related_products %}
+                {% include 'partials/product_card.html' %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

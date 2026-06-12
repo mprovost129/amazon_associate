@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ collection.display_seo_title }} | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ collection.display_seo_description }}{% endblock %}
+{% block og_title %}{{ collection.display_seo_title }} | {{ SITE_NAME }}{% endblock %}
+{% block og_description %}{{ collection.display_seo_description }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products:collection_list' %}">Collections</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ collection.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="alert alert-warning small mb-4" role="note">
+        <strong>Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases. This does not change the price you pay.
+    </div>
+
+    <header class="mb-4">
+        {% if collection.is_featured %}<span class="badge text-bg-warning mb-2">Featured collection</span>{% endif %}
+        <h1 class="mb-2">{{ collection.title }}</h1>
+        {% if collection.subtitle %}<p class="lead text-muted">{{ collection.subtitle }}</p>{% endif %}
+        {% if collection.intro %}<div class="content-copy">{{ collection.intro|linebreaks }}</div>{% endif %}
+    </header>
+
+    {% if collection.products.all %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        {% for product in collection.products.all %}
+            {% if product.is_active %}{% include 'partials/product_card.html' %}{% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted py-5">No products have been added to this collection yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

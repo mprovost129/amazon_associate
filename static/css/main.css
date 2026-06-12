@@ -224,3 +224,70 @@ button[type="submit"]:hover {
 .footer-link:hover {
     color: #fff !important;
 }
+
+/* =============================================================================
+   Product detail
+   ============================================================================= */
+
+.product-detail__media {
+    background: var(--bs-gray-100);
+    border: 1px solid var(--bs-gray-200);
+    padding: 1rem;
+}
+
+.product-detail__media img {
+    width: 100%;
+    max-height: 520px;
+    object-fit: contain;
+    background: #fff;
+}
+
+
+/* =============================================================================
+   Phase 2 content, search, and collection polish
+   ============================================================================= */
+
+.product-card__img {
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: var(--bs-gray-100);
+    padding: 0.75rem;
+}
+
+.product-card__placeholder {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bs-gray-100);
+}
+
+.product-card__desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.guide-card__image {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.content-copy {
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+
+.content-copy p {
+    margin-bottom: 1.1rem;
+}
+
+.navbar form input[type="search"] {
+    max-width: 220px;
+}
+
+.card form input[type="search"],
+.card form select {
+    max-width: none;
+}

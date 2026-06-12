@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Guides | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Practical buying guides and setup recommendations for home design, construction, coding, web design, and 3D printing.{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <header class="mb-4">
+        <h1 class="h3 mb-1">Guides</h1>
+        <p class="text-muted mb-0">Helpful explanations first, product links second.</p>
+    </header>
+
+    {% if guides %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for guide in guides %}
+        <div class="col">
+            <article class="card h-100 shadow-sm">
+                {% if guide.featured_image_url %}<img src="{{ guide.featured_image_url }}" alt="{{ guide.title }}" class="card-img-top guide-card__image" loading="lazy">{% endif %}
+                <div class="card-body">
+                    {% if guide.category %}<span class="badge text-bg-light border mb-2">{{ guide.category.name }}</span>{% endif %}
+                    <h2 class="h5"><a href="{{ guide.get_absolute_url }}" class="text-dark text-decoration-none">{{ guide.title }}</a></h2>
+                    {% if guide.dek %}<p class="text-muted small">{{ guide.dek }}</p>{% endif %}
+                    {% if guide.tags.all %}
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for tag in guide.tags.all|slice:":3" %}<span class="badge rounded-pill text-bg-light border">{{ tag.name }}</span>{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white border-0 pt-0">
+                    <a href="{{ guide.get_absolute_url }}" class="btn btn-outline-dark btn-sm">Read guide</a>
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted py-5">No guides published yet.</p>
+    {% endif %}
+
+    {% if is_paginated %}
+    <nav class="mt-4" aria-label="Guide pages">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>{% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>{% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

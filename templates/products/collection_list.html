@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Kits & Collections | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Curated kits and collections for home design, construction, coding, web design, and 3D printing workflows.{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex align-items-baseline justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-1">Kits & Collections</h1>
+            <p class="text-muted mb-0">Grouped product picks for specific workflows and setups.</p>
+        </div>
+    </div>
+
+    {% if collections %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for collection in collections %}
+        <div class="col">
+            <article class="card h-100 shadow-sm">
+                <div class="card-body">
+                    {% if collection.is_featured %}<span class="badge text-bg-warning mb-2">Featured</span>{% endif %}
+                    <h2 class="h5"><a href="{{ collection.get_absolute_url }}" class="text-dark text-decoration-none">{{ collection.title }}</a></h2>
+                    {% if collection.subtitle %}<p class="text-muted">{{ collection.subtitle }}</p>{% endif %}
+                    <p class="small mb-0">{{ collection.products.count }} pick{{ collection.products.count|pluralize }}</p>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0">
+                    <a href="{{ collection.get_absolute_url }}" class="btn btn-outline-dark btn-sm">Open collection</a>
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted py-5">No collections published yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

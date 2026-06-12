@@ -2,13 +2,30 @@
 
 {% block title %}{{ category.name }} | {{ SITE_NAME }}{% endblock %}
 {% block meta_description %}Shop {{ category.name }} picks curated by {{ SITE_NAME }}.{% endblock %}
+{% block og_title %}{{ category.name }} | {{ SITE_NAME }}{% endblock %}
+{% block og_description %}Shop {{ category.name }} picks curated by {{ SITE_NAME }}.{% endblock %}
 
 {% block hero %}{% include 'partials/hero.html' with hero_text=category.hero_text %}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
 
+    <div class="alert alert-warning small mb-4" role="note">
+        <strong>Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases. This does not change the price you pay.
+    </div>
+
     <h1 class="h3 mb-4">{{ category.name }}</h1>
+
+    {% if featured_products %}
+    <section class="mb-5">
+        <h2 class="h5 mb-3">Featured {{ category.name }} Picks</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+            {% for product in featured_products %}
+                {% include 'partials/product_card.html' %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
 
     {% if products %}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">

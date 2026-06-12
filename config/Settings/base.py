@@ -20,12 +20,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     # Third-party
     'axes',
     # Local
     'users',
     'core',
     'products',
+    'guides',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -43,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'core.middleware.CampaignTrackingMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -98,6 +101,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_NAME = 'Provost Digital Depot'
 SITE_TAGLINE = 'Curated picks for architecture, coding, and 3D printing.'
+GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID') or os.environ.get('GA_MEASUREMENT_ID', '')
 
 # Auth
 LOGIN_URL = 'login'

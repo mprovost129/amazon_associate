@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Performance Dashboard | {{ SITE_NAME }}{% endblock %}
+{% block robots %}noindex,nofollow{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <p class="text-uppercase small fw-semibold text-muted mb-1">Phase 3 analytics</p>
+            <h1 class="h2 mb-1">Performance Dashboard</h1>
+            <p class="text-muted mb-0">Outbound Amazon clicks by product, source, campaign, and page.</p>
+        </div>
+        <div class="text-end">
+            <div class="display-6 fw-bold">{{ total_clicks }}</div>
+            <div class="small text-muted">total tracked clicks</div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5">Top Products</h2>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead><tr><th>Product</th><th class="text-end">Clicks</th></tr></thead>
+                            <tbody>
+                            {% for product in top_products %}
+                            <tr><td>{{ product.name }}</td><td class="text-end">{{ product.total_clicks }}</td></tr>
+                            {% empty %}
+                            <tr><td colspan="2" class="text-muted">No clicks yet.</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5">Top Traffic Sources</h2>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead><tr><th>Source</th><th class="text-end">Clicks</th></tr></thead>
+                            <tbody>
+                            {% for row in top_sources %}
+                            <tr><td>{{ row.source|default:'direct / unknown' }}</td><td class="text-end">{{ row.total }}</td></tr>
+                            {% empty %}
+                            <tr><td colspan="2" class="text-muted">No source data yet.</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5">Top Campaigns</h2>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead><tr><th>Campaign</th><th class="text-end">Clicks</th></tr></thead>
+                            <tbody>
+                            {% for row in top_campaigns %}
+                            <tr><td>{{ row.campaign|default:'none' }}</td><td class="text-end">{{ row.total }}</td></tr>
+                            {% empty %}
+                            <tr><td colspan="2" class="text-muted">No campaign data yet.</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5">Top Click Pages</h2>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead><tr><th>Page</th><th class="text-end">Clicks</th></tr></thead>
+                            <tbody>
+                            {% for row in top_pages %}
+                            <tr><td>{{ row.page_path|default:'unknown' }}</td><td class="text-end">{{ row.total }}</td></tr>
+                            {% empty %}
+                            <tr><td colspan="2" class="text-muted">No page data yet.</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="h5">Recent Clicks</h2>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>Time</th><th>Product</th><th>Source</th><th>Campaign</th><th>Page</th></tr></thead>
+                    <tbody>
+                    {% for click in recent_clicks %}
+                    <tr>
+                        <td>{{ click.clicked_at }}</td>
+                        <td>{{ click.product.name }}</td>
+                        <td>{{ click.source|default:'unknown' }}</td>
+                        <td>{{ click.campaign|default:'none' }}</td>
+                        <td>{{ click.page_path|default:'unknown' }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-muted">No clicks have been tracked yet.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
