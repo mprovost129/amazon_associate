@@ -22,7 +22,7 @@ class ProductSearchView(ListView):
     paginate_by = 24
 
     def get_queryset(self):
-        queryset = Product.objects.filter(is_active=True).select_related('category').prefetch_related('tags')
+        queryset = Product.objects.filter(is_active=True).prefetch_related('categories', 'tags')
         self.query = self.request.GET.get('q', '').strip()
         self.category_slug = self.request.GET.get('category', '').strip()
         self.tag_slug = self.request.GET.get('tag', '').strip()
@@ -33,11 +33,11 @@ class ProductSearchView(ListView):
                 | Q(description__icontains=self.query)
                 | Q(best_for__icontains=self.query)
                 | Q(why_i_like_it__icontains=self.query)
-                | Q(category__name__icontains=self.query)
+                | Q(categories__name__icontains=self.query)
                 | Q(tags__name__icontains=self.query)
             )
         if self.category_slug:
-            queryset = queryset.filter(category__slug=self.category_slug)
+            queryset = queryset.filter(categories__slug=self.category_slug)
         if self.tag_slug:
             queryset = queryset.filter(tags__slug=self.tag_slug)
         return queryset.distinct()
@@ -60,10 +60,10 @@ class CategoryDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['products'] = Product.objects.filter(
-            category=self.object, is_active=True
+            categories=self.object, is_active=True
         ).prefetch_related('tags')
         context['featured_products'] = Product.objects.filter(
-            category=self.object, is_active=True, is_featured=True
+            categories=self.object, is_active=True, is_featured=True
         ).prefetch_related('tags')[:8]
         return context
 
@@ -76,17 +76,18 @@ class ProductDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Product.objects.filter(is_active=True).select_related('category').prefetch_related('tags', 'related_products')
+        return Product.objects.filter(is_active=True).prefetch_related('categories', 'tags', 'related_products')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.object
-        related = product.related_products.filter(is_active=True).select_related('category').prefetch_related('tags')
+        related = product.related_products.filter(is_active=True).prefetch_related('categories', 'tags')
         if not related.exists():
             related = Product.objects.filter(is_active=True).exclude(pk=product.pk)
-            if product.category_id:
-                related = related.filter(category=product.category)
-            related = related.select_related('category').prefetch_related('tags')[:4]
+            product_categories = product.categories.all()
+            if product_categories.exists():
+                related = related.filter(categories__in=product_categories)
+            related = related.prefetch_related('categories', 'tags').distinct()[:4]
         context['related_products'] = related
         return context
 
@@ -108,7 +109,7 @@ class CollectionDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Collection.objects.filter(is_published=True).prefetch_related('products__category', 'products__tags')
+        return Collection.objects.filter(is_published=True).prefetch_related('products__categories', 'products__tags')
 
 
 class ProductRedirectView(View):
@@ -150,9 +151,10 @@ class ProductExportView(View):
             'order', 'seo_title', 'seo_description', 'review_status', 'last_checked_at',
             'next_review_at', 'review_notes',
         ])
-        for product in Product.objects.select_related('category').prefetch_related('tags'):
+        for product in Product.objects.prefetch_related('categories', 'tags'):
             writer.writerow([
-                product.name, product.slug, product.category.name if product.category else '',
+                product.name, product.slug,
+                ', '.join(product.categories.values_list('name', flat=True)),
                 ', '.join(product.tags.values_list('name', flat=True)), product.amazon_url,
                 product.amazon_asin, product.image_url, product.description, product.best_for,
                 product.why_i_like_it, product.is_active, product.is_featured, product.order,
@@ -213,7 +215,6 @@ class ProductImportView(View):
             product.amazon_url = amazon_url
             if slug:
                 product.slug = slug
-            product.category = category
             product.amazon_asin = (row.get('amazon_asin') or '').strip()
             product.image_url = (row.get('image_url') or '').strip()
             product.description = (row.get('description') or '').strip()
@@ -227,6 +228,9 @@ class ProductImportView(View):
             product.review_status = (row.get('review_status') or Product.REVIEW_DRAFT).strip()
             product.review_notes = (row.get('review_notes') or '').strip()
             product.save()
+
+            if category:
+                product.categories.add(category)
 
             tag_names = [tag.strip() for tag in (row.get('tags') or '').split(',') if tag.strip()]
             if tag_names:

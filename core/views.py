@@ -22,11 +22,11 @@ class HomeView(TemplateView):
             products__is_active=True
         ).distinct()[:6]
         context['uncategorized'] = Product.objects.filter(
-            is_active=True, category__isnull=True
-        ).prefetch_related('tags')[:8]
+            is_active=True
+        ).filter(categories__isnull=True).prefetch_related('tags')[:8]
         context['featured_products'] = Product.objects.filter(
             is_active=True, is_featured=True,
-        ).select_related('category').prefetch_related('tags')[:8]
+        ).prefetch_related('categories', 'tags')[:8]
         context['featured_collections'] = Collection.objects.filter(
             is_published=True, is_featured=True,
         ).prefetch_related('products')[:4]

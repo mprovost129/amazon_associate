@@ -49,10 +49,7 @@ class Product(models.Model):
         (REVIEW_ARCHIVED, 'Archived'),
     )
 
-    category = models.ForeignKey(
-        Category, null=True, blank=True,
-        on_delete=models.SET_NULL, related_name='products',
-    )
+    categories = models.ManyToManyField(Category, blank=True, related_name='products')
     tags = models.ManyToManyField(Tag, blank=True, related_name='products')
     related_products = models.ManyToManyField(
         'self',

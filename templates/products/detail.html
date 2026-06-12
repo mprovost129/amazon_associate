@@ -12,9 +12,11 @@
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb small">
             <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
-            {% if product.category %}
-            <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+            {% with first_cat=product.categories.first %}
+            {% if first_cat %}
+            <li class="breadcrumb-item"><a href="{{ first_cat.get_absolute_url }}">{{ first_cat.name }}</a></li>
             {% endif %}
+            {% endwith %}
             <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
         </ol>
     </nav>
@@ -51,14 +53,16 @@
             <p>{{ product.why_i_like_it|linebreaksbr }}</p>
             {% endif %}
             <div class="d-grid gap-2 d-sm-flex mt-4">
-                <a href="{{ product.get_redirect_url }}" class="btn btn-warning btn-lg fw-semibold js-affiliate-click" rel="sponsored nofollow noopener" data-product-name="{{ product.name }}" data-product-category="{{ product.category.name|default:'Uncategorized' }}">
+                <a href="{{ product.get_redirect_url }}" class="btn btn-warning btn-lg fw-semibold js-affiliate-click" rel="sponsored nofollow noopener" data-product-name="{{ product.name }}" data-product-category="{{ product.categories.first.name|default:'Uncategorized' }}">
                     Check Current Price on Amazon
                 </a>
-                {% if product.category %}
-                <a href="{{ product.category.get_absolute_url }}" class="btn btn-outline-secondary btn-lg">
-                    More {{ product.category.name }} Picks
+                {% with first_cat=product.categories.first %}
+                {% if first_cat %}
+                <a href="{{ first_cat.get_absolute_url }}" class="btn btn-outline-secondary btn-lg">
+                    More {{ first_cat.name }} Picks
                 </a>
                 {% endif %}
+                {% endwith %}
             </div>
             <p class="small text-muted mt-3 mb-0">
                 Prices and availability can change. Use the Amazon button to view the current product details.

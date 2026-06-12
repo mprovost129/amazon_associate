@@ -38,7 +38,7 @@
                    class="btn btn-warning btn-sm w-100 fw-semibold js-affiliate-click"
                    rel="sponsored nofollow noopener"
                    data-product-name="{{ product.name }}"
-                   data-product-category="{{ product.category.name|default:'Uncategorized' }}">
+                   data-product-category="{{ product.categories.first.name|default:'Uncategorized' }}">
                     Check Price on Amazon
                 </a>
             </div>

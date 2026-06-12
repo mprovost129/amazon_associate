@@ -28,12 +28,12 @@ class TagAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     change_list_template = 'admin/products/product/change_list.html'
     list_display = (
-        'name', 'category', 'review_status', 'is_active', 'is_featured',
+        'name', 'get_categories', 'review_status', 'is_active', 'is_featured',
         'order', 'click_count', 'last_checked_at', 'next_review_at', 'created_at',
     )
     list_editable = ('review_status', 'is_active', 'is_featured', 'order')
     list_filter = (
-        'review_status', 'is_active', 'is_featured', 'category', 'tags',
+        'review_status', 'is_active', 'is_featured', 'categories', 'tags',
         'last_checked_at', 'next_review_at',
     )
     search_fields = (
@@ -42,11 +42,11 @@ class ProductAdmin(admin.ModelAdmin):
     )
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('created_at',)
-    filter_horizontal = ('tags', 'related_products')
+    filter_horizontal = ('categories', 'tags', 'related_products')
     actions = ('mark_current', 'mark_needs_review', 'mark_inactive', 'export_selected_csv')
     fieldsets = (
         (None, {
-            'fields': ('category', 'tags', 'related_products', 'name', 'slug', 'description', 'amazon_url', 'amazon_asin', 'image_url'),
+            'fields': ('categories', 'tags', 'related_products', 'name', 'slug', 'description', 'amazon_url', 'amazon_asin', 'image_url'),
         }),
         ('Recommendation copy', {
             'fields': ('best_for', 'why_i_like_it'),
@@ -74,6 +74,10 @@ class ProductAdmin(admin.ModelAdmin):
             path('export-template/', self.admin_site.admin_view(self.export_template), name='products_product_export_template'),
         ]
         return custom_urls + urls
+
+    @admin.display(description='Categories')
+    def get_categories(self, obj):
+        return ', '.join(obj.categories.values_list('name', flat=True)) or '-'
 
     @admin.display(ordering='_click_count', description='Clicks')
     def click_count(self, obj):
@@ -117,9 +121,10 @@ def write_product_csv(queryset):
         'order', 'seo_title', 'seo_description', 'review_status', 'last_checked_at',
         'next_review_at', 'review_notes',
     ])
-    for product in queryset.select_related('category').prefetch_related('tags'):
+    for product in queryset.prefetch_related('categories', 'tags'):
         writer.writerow([
-            product.name, product.slug, product.category.name if product.category else '',
+            product.name, product.slug,
+            ', '.join(product.categories.values_list('name', flat=True)),
             ', '.join(product.tags.values_list('name', flat=True)), product.amazon_url,
             product.amazon_asin, product.image_url, product.description, product.best_for,
             product.why_i_like_it, product.is_active, product.is_featured, product.order,

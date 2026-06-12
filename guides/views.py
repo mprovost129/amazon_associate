@@ -21,4 +21,4 @@ class GuideDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Guide.objects.filter(is_published=True).select_related('category').prefetch_related('tags', 'related_products__category')
+        return Guide.objects.filter(is_published=True).select_related('category').prefetch_related('tags', 'related_products__categories')
